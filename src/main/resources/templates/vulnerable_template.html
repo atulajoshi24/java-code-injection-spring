@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head>
+    <title>SSTI Demo</title>
+</head>
+<body>
+    <h1>Welcome!</h1>
+    <!-- VULNERABLE: The double underscores trigger expression preprocessing -->
+    <p>Your ID is: <span th:text="__${userInput}__"></span></p>
+</body>
+</html>
