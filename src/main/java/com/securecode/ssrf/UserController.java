@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import net.objecthunter.exp4j.Expression;
+import net.objecthunter.exp4j.ExpressionBuilder;
+
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
@@ -34,11 +37,27 @@ public class UserController {
 	public String calculate(@RequestHeader(value = "Injected-Header", defaultValue = "") String expression) throws Exception {
 	    ScriptEngineManager manager = new ScriptEngineManager();
 	    ScriptEngine engine = manager.getEngineByName("JavaScript");
+	    System.out.println("engine --> "+engine);
+
 
 	    Object result = engine.eval(expression);
 	    System.out.println("result --> "+result);
 	    return result.toString();
 
+	}
+	
+	
+	@GetMapping("/calculate-safe")
+	@ResponseBody
+	public String calculateSafe(@RequestHeader(value = "Injected-Header", defaultValue = "") String expression) {
+	    try {
+	        Expression exp = new ExpressionBuilder(expression).build();
+	        double result = exp.evaluate();
+
+	        return String.valueOf(result);
+	    } catch (Exception e) {
+	        return "Invalid expression";
+	    }
 	}
 
 }
